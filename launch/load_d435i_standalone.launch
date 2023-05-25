@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<launch>
+
+    <arg name="name" default="D435i_camera" />
+    <arg name="parent" default="world" />
+        
+    <arg name="pose_x" default="0" />
+    <arg name="pose_y" default="0" />
+    <arg name="pose_z" default="0" />
+    <arg name="pose_roll" default="0" />
+    <arg name="pose_pitch" default="0" />
+    <arg name="pose_yaw" default="0" />
+    <arg name="enable_pointcloud" default="false" />
+    <arg name="pub_world_tf" default="true" />
+    <arg name="waitFor" default="" doc="Name of another model to wait. Option to wait for another model to be spawned first (eg a table on which the cam must stay on)" />
+    
+
+    <arg name="xacroD435" value="$(find realsense_gazebo_description)/urdf/_d435i_standalone.urdf.xacro
+         name:=$(arg name)
+         parent:=$(arg parent)
+         x:=$(arg pose_x)
+         y:=$(arg pose_y)
+         z:=$(arg pose_z)
+         roll:=$(arg pose_roll)
+         pitch:=$(arg pose_pitch)
+         yaw:=$(arg pose_yaw)
+         enable_pointcloud:=$(arg enable_pointcloud)
+         "
+    />
+    <param name="gazebo/$(arg name)_description" command="$(find xacro)/xacro $(arg xacroD435)" />
+
+    <node name="urdf_spawner_$(arg name)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model $(arg name) -param gazebo/$(arg name)_description"/>
+    
+    <node pkg="tf2_ros" type="static_transform_publisher" name="$(arg name)_world_to_base_tf" args="$(arg pose_x) $(arg pose_y) $(arg pose_z) $(arg pose_yaw) $(arg pose_pitch) $(arg pose_roll) world $(arg name)_bottom_screw_frame"/>
+    
+
+</launch>
