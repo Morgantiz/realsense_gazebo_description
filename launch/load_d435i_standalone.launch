@@ -11,6 +11,7 @@
     <arg name="pose_pitch" default="0" />
     <arg name="pose_yaw" default="0" />
     <arg name="enable_pointcloud" default="false" />
+    <arg name="pub_tf" default="true"/>
     <arg name="pub_world_tf" default="true" />
     <arg name="waitFor" default="" doc="Name of another model to wait. Option to wait for another model to be spawned first (eg a table on which the cam must stay on)" />
     
@@ -34,5 +35,9 @@
     
     <node pkg="tf2_ros" type="static_transform_publisher" name="$(arg name)_world_to_base_tf" args="$(arg pose_x) $(arg pose_y) $(arg pose_z) $(arg pose_yaw) $(arg pose_pitch) $(arg pose_roll) world $(arg name)_bottom_screw_frame"/>
     
+    <node if="$(arg pub_tf)" pkg="robot_state_publisher" type="robot_state_publisher" name="$(arg name)_rsp" >
+        <remap from="robot_description" to="gazebo/$(arg name)_description" />
+        <remap from="joint_states" to="$(arg name)/joint_states" />
+    </node>
 
 </launch>
