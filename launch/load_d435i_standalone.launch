@@ -13,6 +13,7 @@
     <arg name="enable_pointcloud" default="false" />
     <arg name="pub_tf" default="true"/>
     <arg name="pub_world_tf" default="true" />
+    <arg name="spawn_gazebo" default="true"/>
     <arg name="waitFor" default="" doc="Name of another model to wait. Option to wait for another model to be spawned first (eg a table on which the cam must stay on)" />
     
 
@@ -30,10 +31,10 @@
     />
     <param name="gazebo/$(arg name)_description" command="$(find xacro)/xacro $(arg xacroD435)" />
 
-    <node name="urdf_spawner_$(arg name)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    <node if="$(arg spawn_gazebo)" name="urdf_spawner_$(arg name)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
           args="-urdf -model $(arg name) -param gazebo/$(arg name)_description"/>
     
-    <node pkg="tf2_ros" type="static_transform_publisher" name="$(arg name)_world_to_base_tf" args="$(arg pose_x) $(arg pose_y) $(arg pose_z) $(arg pose_yaw) $(arg pose_pitch) $(arg pose_roll) world $(arg name)_bottom_screw_frame"/>
+    <node if="$(arg pub_world_tf)" pkg="tf2_ros" type="static_transform_publisher" name="$(arg name)_world_to_base_tf" args="$(arg pose_x) $(arg pose_y) $(arg pose_z) $(arg pose_yaw) $(arg pose_pitch) $(arg pose_roll) world $(arg name)_bottom_screw_frame"/>
     
     <node if="$(arg pub_tf)" pkg="robot_state_publisher" type="robot_state_publisher" name="$(arg name)_rsp" >
         <remap from="robot_description" to="gazebo/$(arg name)_description" />
