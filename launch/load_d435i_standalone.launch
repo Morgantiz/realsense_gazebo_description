@@ -10,6 +10,12 @@
     <arg name="pose_roll" default="0" />
     <arg name="pose_pitch" default="0" />
     <arg name="pose_yaw" default="0" />
+    <arg name="spawn_x" default="0" />
+    <arg name="spawn_y" default="0" />
+    <arg name="spawn_z" default="0" />
+    <arg name="spawn_roll" default="0" />
+    <arg name="spawn_pitch" default="0" />
+    <arg name="spawn_yaw" default="0" />
     <arg name="enable_pointcloud" default="false" />
     <arg name="pub_tf" default="true"/>
     <arg name="pub_world_tf" default="true" />
@@ -32,7 +38,7 @@
     <param name="gazebo/$(arg name)_description" command="$(find xacro)/xacro $(arg xacroD435)" />
 
     <node if="$(arg spawn_gazebo)" name="urdf_spawner_$(arg name)" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-          args="-urdf -model $(arg name) -param gazebo/$(arg name)_description"/>
+          args="-urdf -model $(arg name) -param gazebo/$(arg name)_description -x $(arg spawn_x) -y $(arg spawn_y) -z $(arg spawn_z) -R $(arg spawn_roll) -P $(arg spawn_pitch) -Y $(arg spawn_yaw)"/>
     
     <node if="$(arg pub_world_tf)" pkg="tf2_ros" type="static_transform_publisher" name="$(arg name)_world_to_base_tf" args="$(arg pose_x) $(arg pose_y) $(arg pose_z) $(arg pose_yaw) $(arg pose_pitch) $(arg pose_roll) world $(arg name)_bottom_screw_frame"/>
     
